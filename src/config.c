@@ -35,19 +35,19 @@ static void IRC_ProcessConfigElement(char** out, const char* szKey, const char* 
 	}
 }
 
-int IRC_SetupConfig(const char *pLocation)
+bool IRC_SetupConfig(const char *pLocation)
 {
-	char* pString = IRC_ReadFile(pLocation); // get a pointer to the file contents as a string
+	FILE *pFile;
+	char pLine[512];
 
 	ci.iServers = 0;
 	ci.pServerInfo = NULL;
 
-	if(pString != NULL) // file was read successfully
+	if((pFile = fopen(pLocation, "r")) != NULL) // file was read successfully
 	{
-		char *pLine = strtok(pString, "\n"); // split line by line
 		struct server_info* csi;
 
-		do
+		while(fgets(pLine, sizeof(pLine), pFile) != NULL)
 		{
 			char *pValue = NULL;
 
@@ -93,11 +93,9 @@ int IRC_SetupConfig(const char *pLocation)
 				}
 			}
 		}
-		while((pLine = strtok(NULL, "\n")) != NULL); // loop through the lines
 
-		free(pString);
-
-		return 1; // success
+		fclose(pFile);
+		return true; // success
 	}
-    return 0; // error
+    return false; // error
 }

@@ -9,4 +9,6 @@
 
 #include "stdafx.h"
 
+#define VERSION 0x000102
+
 #endif // CONSTANTS_H_INCLUDED

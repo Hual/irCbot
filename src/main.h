@@ -8,6 +8,5 @@
 	#define MAIN_H_INCLUDED
 
 #include "stdafx.h"
-#include "socket.h"
 
 #endif // MAIN_H_INCLUDED

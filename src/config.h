@@ -42,6 +42,6 @@ struct config_info
 
 extern struct config_info ci;
 
-int IRC_SetupConfig(const char *szLocation); // IRC_SetupConfig method, used to load the configuration from the file
+bool IRC_SetupConfig(const char *szLocation); // IRC_SetupConfig method, used to load the configuration from the file
 
 #endif // CONFIG_H_INCLUDED

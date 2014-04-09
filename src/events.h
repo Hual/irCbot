@@ -8,7 +8,6 @@
 #define EVENTS_H_INCLUDED
 
 #include "stdafx.h"
-#include "socket.h"
 
 void IRC_ProcessEvents(struct instance_data* pID, char *pLine);
 void IRC_OnNicknameConflict(struct instance_data* pID);

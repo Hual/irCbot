@@ -10,11 +10,9 @@ void IRC_ProcessEvents(struct instance_data* pID, char *pLine)
 {
     char **pParts;
     unsigned int iSize;
-
     iSize = explode(&pParts, pLine, ' ');
 
-	if(ci.pData[CONFIG_BOT_ECHO][0] == '1')
-		printf("%s:%i > %s\r\n", pID->sCSI->szServer, pID->sCSI->iPort, pLine);
+	IRC_echo(pID, pLine);
 
     if (pParts[0] && pParts[1])
     {

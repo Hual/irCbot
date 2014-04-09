@@ -49,7 +49,7 @@ char* GetApplicationPath(char *szMargv0)
 
 void GetNameFromPath(char *lpOut, const char *szPath, const char *szName)
 {
-	memset(lpOut, 0, strlen(lpOut)); // set memory
+	lpOut[0] = 0;
 	strcat(lpOut, szPath); // append path to empty string
 	strcat(lpOut, szName); // append file name to path
 }
@@ -64,43 +64,6 @@ signed int GetKeyIndex(const char** ppKeys, const char* szKey, const unsigned in
 	}
 	while(++i < len); // while pointer is valid
 	return -1; // no matching keys found
-}
-
-char* IRC_ReadFile(const char *szPath)
-{
-    FILE *pFile;
-	char *pContents = NULL;
-
-    if ((pFile = fopen(szPath, "r")) != NULL) // open file with read permissions
-    {
-    	if (fseek(pFile, 0, SEEK_END) != 0) // go to end of file
-			return pContents;
-
-		long lFileSize = ftell(pFile); // get current position (set to end of file above), used to get the file length
-		if(fseek(pFile, 0, SEEK_SET) != 0) // set back to the beginning
-			return pContents;
-
-		pContents = malloc(lFileSize+1); // allocate memory to store the contents of the file
-		fread(pContents, 1, lFileSize, pFile); // read the file and store contents into memory
-
-	}
-	fclose(pFile);
-	return pContents; // return a pointer to the file contents
-}
-
-bool IRC_IsAuthorized(const char *pAddress)
-{
-	FILE *pFile;
-	char szLine[256], szPath[PATH_MAX];
-	GetNameFromPath(szPath, pAppPath, "authusers.txt");
-
-    if ((pFile = fopen(szPath, "r")) != NULL) // open file with read permissions
-		while(fgets(szLine, sizeof(szLine), pFile) != NULL)
-			if(!strncmp(szLine, pAddress, strlen(pAddress)))
-				return true;
-
-	fclose(pFile);
-    return false;
 }
 
 char* trim_left(char *szString)
@@ -133,18 +96,6 @@ char* replace_first(char* szString, const char cChr, const char cReplacement)
 	return pChar;
 }
 
-char* IRC_GetParameterAt(const char* szLine, unsigned int iNum)
-{
-	int i = 0;
-	char* pParam;
-
-	pParam = strchr(szLine, ' ');
-	while(pParam && ++i < iNum)
-		pParam = strchr(pParam+1, ' ');
-
-	return pParam+1;
-}
-
 THREAD_CALLBACK system_print(void* lpParam)
 {
 		FILE *pOutput;
@@ -162,4 +113,12 @@ THREAD_CALLBACK system_print(void* lpParam)
 		free(params->pChannel);
 		free(lpParam);
 		return 0;
+}
+
+void error(const char* szString, ...)
+{
+	va_list pArgs;
+    va_start(pArgs, szString);
+    vfprintf(stderr, szString, pArgs);
+    va_end(pArgs);
 }

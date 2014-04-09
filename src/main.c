@@ -13,27 +13,25 @@ int main(int argc, char **argv) // entry point
     char szConfigPath[PATH_MAX]; // initialize a char array
 
     pAppPath = GetApplicationPath(argv[0]); // get the application path, argv[0] always stores application path
+    printf("-- irCbot v%i.%i.%i started (%s) --\n", (VERSION >> 16) & 0xFF, (VERSION >> 8) & 0xFF, VERSION & 0xFF, pAppPath);
     GetNameFromPath(szConfigPath, pAppPath, "config.ini"); // append "config.ini" to the application path
 
     if (!IRC_SetupConfig(szConfigPath)) // load configuration from file
     {
-        printf("Fatal error: Failed to load config!\n");
-        goto iExitLoc;
+		error("Failed to load config!\n");
+		return EXIT_FAILURE;
     }
 
 	unsigned int i;
 	for(i = 0;i < ci.iServers;++i)
 	{
-		INSTANCE* iInstance = malloc(sizeof(INSTANCE));
-		if(!IRC_AttemptConnection(&ci.pServerInfo[i], iInstance)) // connect to IP/hostname
+		if(!IRC_AttemptConnection(&ci.pServerInfo[i], NULL)) // connect to IP/hostname
 		{
-			printf("Fatal error: Failed to connect on IRC network!\n");
-			goto iExitLoc;
+			error("Failed to connect to IRC network!\n");
+			return EXIT_FAILURE;
 		}
 	}
 
     getchar();
-
-    iExitLoc:
-    return 0;
+    return EXIT_SUCCESS;
 }

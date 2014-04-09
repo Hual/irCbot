@@ -19,6 +19,7 @@ struct CMDstruct
 	char* str;
 	void (*func) CMDPARAMS;
 };
+
 char *pAppPath;
 bool IRC_ProcessCommand CMDPARAMS;
 bool IRC_IsAuthorized(const char *pAddress);

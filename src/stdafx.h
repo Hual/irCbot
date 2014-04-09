@@ -33,9 +33,11 @@ struct instance_data
 
 extern char *pAppPath; // char pointer, stores application path
 
-#include "config.h"
 #include "constants.h"
-#include "utils.h"
 #include "thread.h"
+#include "socket.h"
+#include "irc.h"
+#include "config.h"
+#include "utils.h"
 #include "events.h"
 #include "commands.h"
