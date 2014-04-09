@@ -1,3 +1,9 @@
+/**
+ * @project: irCbot - An Internet Relay Chat bot written in C
+ * @file: irc.c
+ * @author: King_Hual <king_hell@abv.bg>
+ */
+
 #include "irc.h"
 
 int IRC_SendRaw(struct instance_data* pID, char *szRawCommand, ...) // send a raw formatted message

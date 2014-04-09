@@ -1,3 +1,9 @@
+/**
+ * @project: irCbot - An Internet Relay Chat bot written in C
+ * @file: irc.h
+ * @author: King_Hual <king_hell@abv.bg>
+ */
+
 #ifndef IRC_H_INCLUDED
 	#define IRC_H_INCLUDED
 

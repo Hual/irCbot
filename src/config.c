@@ -45,7 +45,7 @@ bool IRC_SetupConfig(const char *pLocation)
 
 	if((pFile = fopen(pLocation, "r")) != NULL) // file was read successfully
 	{
-		struct server_info* csi;
+		struct server_info* csi = NULL;
 
 		while(fgets(pLine, sizeof(pLine), pFile) != NULL)
 		{
