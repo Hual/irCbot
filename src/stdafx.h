@@ -1,5 +1,5 @@
 /**
- * @project: irCbot - An Internet Relay Chat bot written in c
+ * @project: irCbot - An Internet Relay Chat bot written in C
  * @file: stdafx.h
  * @author: Djole, King_Hual <djolel@net.dut.edu.vn>, <king_hell@abv.bg>
  */
@@ -31,12 +31,13 @@ struct instance_data
 	struct server_info* sCSI;
 };
 
-extern char *pAppPath; // char pointer, stores application path
+extern char *g_pAppPath; // char pointer, stores application path
 
 #include "constants.h"
 #include "thread.h"
 #include "socket.h"
 #include "irc.h"
+#include "perms.h"
 #include "config.h"
 #include "utils.h"
 #include "events.h"

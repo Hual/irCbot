@@ -9,18 +9,19 @@
 
 #include "stdafx.h"
 
-#define CMDDEF(cmd) { (#cmd), (CMD_##cmd) }
+#define CMDDEF(cmd, level) { (#cmd), (CMD_##cmd), level }
 #define CMD_LIST static struct CMDstruct CMDlist[] =
 #define CMDPARAMS (struct instance_data* pID, char* szUser, char* szChannel, unsigned int iArgc, char** ppArgs, char* szArgsRaw)
 #define CMD(cmd) static void CMD_##cmd CMDPARAMS
 
 struct CMDstruct
 {
-	char* str;
-	void (*func) CMDPARAMS;
+	char* szName;
+	void (*fFunc) CMDPARAMS;
+	unsigned int iLevel;
 };
 
-char *pAppPath;
+char *g_pAppPath;
 bool IRC_ProcessCommand CMDPARAMS;
 bool IRC_IsAuthorized(const char *pAddress);
 #endif // COMMANDS_H_INCLUDED

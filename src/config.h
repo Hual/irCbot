@@ -20,9 +20,10 @@
 
 #define CONFIG_BOT_PREFIX 0
 #define CONFIG_BOT_ECHO 1
+#define CONFIG_BOT_PERMISSIONS 2
 
 #define INI_SERVER_KEYS 6
-#define INI_BOT_KEYS 2
+#define INI_BOT_KEYS 3
 
 #define cfg(a) sCSI->pData[a]
 
@@ -40,7 +41,7 @@ struct config_info
 	struct server_info* pServerInfo;
 };
 
-extern struct config_info ci;
+extern struct config_info g_sCI;
 
 bool IRC_SetupConfig(const char *szLocation); // IRC_SetupConfig method, used to load the configuration from the file
 

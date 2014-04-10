@@ -20,9 +20,10 @@ const static char *ppBotConfigKeys[INI_BOT_KEYS] =
 {
 	"cmdprefix",    // CONFIG_BOT_PREFIX
 	"echo",         // CONFIG_BOT_ECHO
+	"permissions"
 };
 
-struct config_info ci;
+struct config_info g_sCI;
 
 static void IRC_ProcessConfigElement(char** out, const char* szKey, const char* szValue, const char** pKeyPool, const unsigned int iKeyPoolLength)
 {
@@ -40,8 +41,8 @@ bool IRC_SetupConfig(const char *pLocation)
 	FILE *pFile;
 	char pLine[512];
 
-	ci.iServers = 0;
-	ci.pServerInfo = NULL;
+	g_sCI.iServers = 0;
+	g_sCI.pServerInfo = NULL;
 
 	if((pFile = fopen(pLocation, "r")) != NULL) // file was read successfully
 	{
@@ -60,16 +61,16 @@ bool IRC_SetupConfig(const char *pLocation)
 				char* pPort = strchr(pLine, ':');
 				*pPort++ = 0;
 
-				csi = malloc(sizeof(struct server_info)*(ci.iServers+1));
+				csi = malloc(sizeof(struct server_info)*(g_sCI.iServers+1));
 
-				if(ci.iServers)
+				if(g_sCI.iServers)
 				{
-					memcpy(csi, ci.pServerInfo, sizeof(struct server_info)*ci.iServers);
-					free(ci.pServerInfo);
+					memcpy(csi, g_sCI.pServerInfo, sizeof(struct server_info)*g_sCI.iServers);
+					free(g_sCI.pServerInfo);
 				}
 
-				ci.pServerInfo = csi;
-				csi = ci.pServerInfo+(ci.iServers++);
+				g_sCI.pServerInfo = csi;
+				csi = g_sCI.pServerInfo+(g_sCI.iServers++);
 
 				csi->szServer = malloc(strlen(&pLine[1])+1);
 				strcpy(csi->szServer, &pLine[1]);
@@ -86,8 +87,8 @@ bool IRC_SetupConfig(const char *pLocation)
 					char* pKey = trim(pLine); // trim space from key
 					pValue = trim(pValue); // trim space from value
 
-					if(!ci.iServers)
-						IRC_ProcessConfigElement(ci.pData, pKey, pValue, ppBotConfigKeys, INI_BOT_KEYS);
+					if(!g_sCI.iServers)
+						IRC_ProcessConfigElement(g_sCI.pData, pKey, pValue, ppBotConfigKeys, INI_BOT_KEYS);
 					else
 						IRC_ProcessConfigElement(csi->pData, pKey, pValue, ppServerConfigKeys, INI_SERVER_KEYS);
 				}

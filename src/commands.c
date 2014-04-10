@@ -17,7 +17,7 @@ CMD(ping)
 
 CMD(say)
 {
-	if(iArgc && IRC_IsAuthorized(szUser))
+	if(iArgc)
 		IRC_SendRaw(pID, "PRIVMSG %s :%s", szChannel, szArgsRaw);
 }
 
@@ -28,69 +28,63 @@ CMD(whoami)
 
 CMD(raw)
 {
-    if (IRC_IsAuthorized(szUser))
-    {
-        if (iArgc)
-            IRC_SendRaw(pID, szArgsRaw);
-        else
-            IRC_SendRaw(pID, "PRIVMSG %s :Usage: .raw [Command]", szChannel);
-    }
-    else
-        IRC_SendRaw(pID, "PRIVMSG %s :You are not authorized to use this command.", szChannel);
+	if (iArgc)
+		IRC_SendRaw(pID, szArgsRaw);
+	else
+		IRC_SendRaw(pID, "PRIVMSG %s :Usage: .raw [command]", szChannel);
 }
 
 CMD(sh)
 {
-    if (IRC_IsAuthorized(szUser))
-    {
-        if (iArgc)
-        {
-            char* _szChannel, * szArgs;
-            _szChannel = malloc(64);
-            szArgs = malloc(512);
-            strcpy(_szChannel, szChannel);
-            strcpy(szArgs, szArgsRaw);
+	if (iArgc)
+	{
+		char* _szChannel, * szArgs;
+		_szChannel = malloc(64);
+		szArgs = malloc(512);
+		strcpy(_szChannel, szChannel);
+		strcpy(szArgs, szArgsRaw);
 
-            struct system_print_params* sspp = (struct system_print_params*)malloc(sizeof(struct system_print_params));
-            sspp->pID = pID;
-            sspp->pChannel = _szChannel;
-            sspp->pArgs = szArgs;
+		struct system_print_params* sspp = (struct system_print_params*)malloc(sizeof(struct system_print_params));
+		sspp->pID = pID;
+		sspp->pChannel = _szChannel;
+		sspp->pArgs = szArgs;
 
-            THANDLE handle;
-            StartThread(&handle, system_print, (void*)sspp);
+		THANDLE handle;
+		StartThread(&handle, system_print, (void*)sspp);
 
-        }
-        else
-        {
-            IRC_SendRaw(pID, "PRIVMSG %s :Usage: .sh [Command]", szChannel);
-        }
-    }
-    else
-    {
-        IRC_SendRaw(pID, "PRIVMSG %s :You are not authorized to use this command.", szChannel);
-    }
+	}
+	else
+	{
+		IRC_SendRaw(pID, "PRIVMSG %s :Usage: .sh [command]", szChannel);
+	}
+}
+
+CMD(mylvl)
+{
+	IRC_SendRaw(pID, "PRIVMSG %s :Your permissions level on %s: %i", szChannel, pID->sCSI->szServer, GetPermissionsLevel(pID->sCSI, szUser));
 }
 
 CMD_LIST
 {
-	CMDDEF(ping),
-	CMDDEF(whoami),
-	CMDDEF(raw),
-	CMDDEF(sh),
-	CMDDEF(say)
+	CMDDEF(ping, 0),
+	CMDDEF(whoami, 0),
+	CMDDEF(raw, 2),
+	CMDDEF(sh, 2),
+	CMDDEF(say, 2),
+	CMDDEF(mylvl, 0)
 };
 
 
 /*********************** stop editing here **********************/
 
-bool IRC_ProcessCommand(struct instance_data* pID, char* user, char* channel, unsigned int partc, char **command, char* raw)
+bool IRC_ProcessCommand CMDPARAMS
 {
 	unsigned int i;
 	for(i = 0; i < sizeof(CMDlist)/sizeof(struct CMDstruct);++i)
 	{
-		if(!strcmp(CMDlist[i].str, &command[0][2]))
+		if(!strcmp(CMDlist[i].szName, &ppArgs[0][2]) && GetPermissionsLevel(pID->sCSI, szUser) >= CMDlist[i].iLevel)
 		{
-			CMDlist[i].func(pID, user, channel, partc-4, &command[1], raw);
+			CMDlist[i].fFunc(pID, szUser, szChannel, iArgc-4, &ppArgs[1], szArgsRaw);
 			return true;
 		}
 	}

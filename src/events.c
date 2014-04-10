@@ -61,13 +61,13 @@ void IRC_ProcessEvents(struct instance_data* pID, char *pLine)
                 case '%':
                 case '@':
                 {
-                    if (!strncmp(ci.pData[CONFIG_BOT_PREFIX], &pParts[3][1], strlen(ci.pData[CONFIG_BOT_PREFIX])))
+                    if (!strncmp(g_sCI.pData[CONFIG_BOT_PREFIX], &pParts[3][1], strlen(g_sCI.pData[CONFIG_BOT_PREFIX])))
                         IRC_ProcessCommand(pID, &pParts[0][1], pParts[2], iSize, &pParts[3], IRC_GetParameterAt(pLine, 4));
                     break;
                 }
                 default:
                 {
-                    if (pParts[3][1] == '\x01')
+                    if (pParts[3][1] == 1)
                     {
                         if (!strncmp(pParts[3] + 2, "VERSION", 7))
                         {

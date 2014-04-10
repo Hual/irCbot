@@ -19,21 +19,6 @@ int IRC_SendRaw(struct instance_data* pID, char *szRawCommand, ...) // send a ra
     return send(pID->iInstance, szBuffer, strlen(szBuffer), 0) != SOCKET_ERROR;
 }
 
-bool IRC_IsAuthorized(const char *pAddress)
-{
-	FILE *pFile;
-	char szLine[256], szPath[PATH_MAX];
-	GetNameFromPath(szPath, pAppPath, "authusers.txt");
-
-    if ((pFile = fopen(szPath, "r")) != NULL) // open file with read permissions
-		while(fgets(szLine, sizeof(szLine), pFile) != NULL)
-			if(!strncmp(szLine, pAddress, strlen(pAddress)))
-				return true;
-
-	fclose(pFile);
-    return false;
-}
-
 char* IRC_GetParameterAt(const char* szLine, unsigned int iNum)
 {
 	int i = 0;
@@ -48,6 +33,6 @@ char* IRC_GetParameterAt(const char* szLine, unsigned int iNum)
 
 void IRC_echo(struct instance_data* pID, char *pLine)
 {
-	if(ci.pData[CONFIG_BOT_ECHO][0] == '1')
+	if(g_sCI.pData[CONFIG_BOT_ECHO][0] == '1')
 		printf("%s:%i > %s\r\n", pID->sCSI->szServer, pID->sCSI->iPort, pLine);
 }
