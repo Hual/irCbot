@@ -27,7 +27,7 @@ const static char *ppBotConfigKeys[INI_BOT_KEYS] =
 
 struct config_info g_sCI;
 
-static void IRC_ProcessConfigElement(char** out, const char* szKey, const char* szValue, const char** pKeyPool, const unsigned int iKeyPoolLength)
+static void ProcessConfigElement(char** out, const char* szKey, const char* szValue, const char** pKeyPool, const unsigned int iKeyPoolLength)
 {
 	signed int iIdx = GetKeyIndex(pKeyPool, szKey, iKeyPoolLength); // get the index of the key (to be stored in the appropriate index in ppConfig)
 
@@ -38,7 +38,7 @@ static void IRC_ProcessConfigElement(char** out, const char* szKey, const char* 
 	}
 }
 
-bool IRC_SetupConfig(const char *pLocation)
+bool InitConfig(const char *pLocation)
 {
 	FILE *pFile;
 	char pLine[512];
@@ -88,9 +88,9 @@ bool IRC_SetupConfig(const char *pLocation)
 					pValue = trim(pValue); // trim space from value
 
 					if(!g_sCI.iServers)
-						IRC_ProcessConfigElement(g_sCI.pData, pKey, pValue, ppBotConfigKeys, INI_BOT_KEYS);
+						ProcessConfigElement(g_sCI.pData, pKey, pValue, ppBotConfigKeys, INI_BOT_KEYS);
 					else
-						IRC_ProcessConfigElement(csi->pData, pKey, pValue, ppServerConfigKeys, INI_SERVER_KEYS);
+						ProcessConfigElement(csi->pData, pKey, pValue, ppServerConfigKeys, INI_SERVER_KEYS);
 				}
 			}
 		}

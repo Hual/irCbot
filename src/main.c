@@ -16,7 +16,7 @@ int main(int argc, char **argv) // entry point
     printf("-- irCbot v%i.%i.%i started (%s) --\n", (VERSION >> 16) & 0xFF, (VERSION >> 8) & 0xFF, VERSION & 0xFF, g_pAppPath);
     GetNameFromPath(szConfigPath, g_pAppPath, "config.ini"); // append "config.ini" to the application path
 
-    if (!IRC_SetupConfig(szConfigPath)) // load configuration from file
+    if (!InitConfig(szConfigPath)) // load configuration from file
     {
 		error("Failed to load config!\n");
 		return EXIT_FAILURE;
