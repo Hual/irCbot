@@ -49,8 +49,7 @@ char* GetApplicationPath(char *szMargv0)
 
 void GetNameFromPath(char *lpOut, const char *szPath, const char *szName)
 {
-	lpOut[0] = 0;
-	strcat(lpOut, szPath); // append path to empty string
+	strcpy(lpOut, szPath); // append path to empty string
 	strcat(lpOut, szName); // append file name to path
 }
 
