@@ -11,26 +11,27 @@
 
 /* configuration definitions */
 
-#define CONFIG_SERVER_SSL 0
-#define CONFIG_SERVER_NICK 1
-#define CONFIG_SERVER_USER 2
-#define CONFIG_SERVER_REAL 3
-#define CONFIG_SERVER_CHANNELS 4
-#define CONFIG_SERVER_PERFORM 5
+#define CONFIG_SERVER_ADDRESS 0
+#define CONFIG_SERVER_PORT 1
+#define CONFIG_SERVER_SSL 2
+#define CONFIG_SERVER_NICK 3
+#define CONFIG_SERVER_USER 4
+#define CONFIG_SERVER_REAL 5
+#define CONFIG_SERVER_CHANNELS 6
+#define CONFIG_SERVER_PERFORM 7
 
 #define CONFIG_BOT_PREFIX 0
 #define CONFIG_BOT_ECHO 1
 #define CONFIG_BOT_PERMISSIONS 2
 
-#define INI_SERVER_KEYS 6
+#define INI_SERVER_KEYS 8
 #define INI_BOT_KEYS 3
 
 #define cfg(a) sCSI->pData[a]
 
 struct server_info
 {
-	char* szServer;
-	unsigned int iPort;
+	char* szName;
 	char* pData[INI_SERVER_KEYS];
 };
 

@@ -27,11 +27,11 @@ int IRC_AttemptConnection(struct server_info* pSI, struct instance_data* pOut)
 
 	if ((pOut->iInstance = socket(aiHints.ai_family, aiHints.ai_socktype, aiHints.ai_protocol)) != INVALID_SOCKET) // initialize socket, store in pOut
 	{
-		getaddrinfo(pSI->szServer, NULL, &aiHints, &aiAddrinfo); // resolve IP from hostname
+		getaddrinfo(pSI->pData[CONFIG_SERVER_ADDRESS], NULL, &aiHints, &aiAddrinfo); // resolve IP from hostname
 		memcpy(&iServices,aiAddrinfo->ai_addr,sizeof(iServices)); // copy to the sockaddr_in structure
 		freeaddrinfo(aiAddrinfo); // free memory
 
-		iServices.sin_port = htons(pSI->iPort); // set the port
+		iServices.sin_port = htons(atoi(pSI->pData[CONFIG_SERVER_PORT])); // set the port
 
 		if (!connect(pOut->iInstance, (struct sockaddr*)&iServices, sizeof (iServices))) // connect to the socket
 		{

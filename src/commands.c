@@ -54,14 +54,12 @@ CMD(sh)
 
 	}
 	else
-	{
 		IRC_SendRaw(pID, "PRIVMSG %s :Usage: .sh [command]", szChannel);
-	}
 }
 
 CMD(mylvl)
 {
-	IRC_SendRaw(pID, "PRIVMSG %s :Your permissions level on %s: %i", szChannel, pID->sCSI->szServer, GetPermissionsLevel(pID->sCSI, szUser));
+	IRC_SendRaw(pID, "PRIVMSG %s :Your permissions level: %i", szChannel, GetPermissionsLevel(pID->sCSI, szUser));
 }
 
 CMD_LIST

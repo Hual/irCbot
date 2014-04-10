@@ -8,6 +8,8 @@
 
 const static char *ppServerConfigKeys[INI_SERVER_KEYS] = // a private constant array that stores keys
 {
+	"address",      // CONFIG_SERVER_ADDRESS
+	"port",         // CONFIG_SERVER_PORT
 	"ssl",          // CONFIG_SERVER_SSL
 	"nickname",     // CONFIG_SERVER_NICK
 	"username",     // CONFIG_SERVER_USER
@@ -58,8 +60,7 @@ bool IRC_SetupConfig(const char *pLocation)
 				continue;
 			else if(pLine[0] == '[' && pLine[strlen(pLine)-1] == ']')
 			{
-				char* pPort = strchr(pLine, ':');
-				*pPort++ = 0;
+				pLine[strlen(pLine)-1] = 0;
 
 				csi = malloc(sizeof(struct server_info)*(g_sCI.iServers+1));
 
@@ -72,9 +73,8 @@ bool IRC_SetupConfig(const char *pLocation)
 				g_sCI.pServerInfo = csi;
 				csi = g_sCI.pServerInfo+(g_sCI.iServers++);
 
-				csi->szServer = malloc(strlen(&pLine[1])+1);
-				strcpy(csi->szServer, &pLine[1]);
-				csi->iPort = atoi(pPort);
+				csi->szName = malloc(strlen(&pLine[1])+1);
+				strcpy(csi->szName, &pLine[1]);
 			}
 			else
 			{

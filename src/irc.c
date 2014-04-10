@@ -34,5 +34,5 @@ char* IRC_GetParameterAt(const char* szLine, unsigned int iNum)
 void IRC_echo(struct instance_data* pID, char *pLine)
 {
 	if(g_sCI.pData[CONFIG_BOT_ECHO][0] == '1')
-		printf("%s:%i > %s\r\n", pID->sCSI->szServer, pID->sCSI->iPort, pLine);
+		printf("%s:%i > %s\r\n", pID->cfg(CONFIG_SERVER_ADDRESS), atoi(pID->cfg(CONFIG_SERVER_PORT)), pLine);
 }

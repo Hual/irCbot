@@ -14,7 +14,7 @@ unsigned int GetPermissionsLevel(const struct server_info* pSI, const char *pUse
 
 	if((pFile = fopen(szPath, "r")) != NULL) // file was read successfully
 	{
-		char szServer[512] = {0};
+		char szName[512] = {0};
 
 		while(fgets(pLine, sizeof(pLine), pFile) != NULL)
 		{
@@ -27,7 +27,7 @@ unsigned int GetPermissionsLevel(const struct server_info* pSI, const char *pUse
 			else if(pLine[0] == '[' && pLine[strlen(pLine)-1] == ']')
 			{
 				pLine[strlen(pLine)-1] = 0;
-				strcpy(szServer, &pLine[1]);
+				strcpy(szName, &pLine[1]);
 			}
 			else
 			{
@@ -40,7 +40,7 @@ unsigned int GetPermissionsLevel(const struct server_info* pSI, const char *pUse
 					char* pKey = trim(pLine); // trim space from key
 					pValue = trim(pValue); // trim space from value
 
-                    if(!strcmp(pSI->szServer, szServer) && !strcmp(pUser, pKey))
+                    if(!strcmp(pSI->szName, szName) && !strcmp(pUser, pKey))
 					{
 						fclose(pFile);
 						return atoi(pValue);
