@@ -6,6 +6,13 @@
 
 #include "perms.h"
 
+const char* g_szPermsName[] =
+{
+	"Ignored",
+	"User",
+	"Owner"
+};
+
 unsigned int GetPermissionsLevel(const struct server_info* pSI, const char *pUser)
 {
 	FILE *pFile;
@@ -50,5 +57,5 @@ unsigned int GetPermissionsLevel(const struct server_info* pSI, const char *pUse
 		}
 		fclose(pFile);
 	}
-    return 0;
+    return PERMS_USER;
 }

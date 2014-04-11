@@ -9,6 +9,12 @@
 
 #include "stdafx.h"
 
+#define PERMS_IGNORED 0
+#define PERMS_USER 1
+#define PERMS_OWNER 2
+
+extern const char* g_szPermsName[];
+
 unsigned int GetPermissionsLevel(const struct server_info* pSI, const char *pUser);
 
 #endif

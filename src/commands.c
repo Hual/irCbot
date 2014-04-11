@@ -51,7 +51,6 @@ CMD(sh)
 
 		THANDLE handle;
 		StartThread(&handle, system_print, (void*)sspp);
-
 	}
 	else
 		IRC_SendRaw(pID, "PRIVMSG %s :Usage: .sh [command]", szChannel);
@@ -59,17 +58,18 @@ CMD(sh)
 
 CMD(mylvl)
 {
-	IRC_SendRaw(pID, "PRIVMSG %s :Your permissions level: %i", szChannel, GetPermissionsLevel(pID->sCSI, szUser));
+	unsigned int iLevel = GetPermissionsLevel(pID->sCSI, szUser);
+	IRC_SendRaw(pID, "PRIVMSG %s :Your permissions level: %i (%s)", szChannel, iLevel, g_szPermsName[iLevel]);
 }
 
 CMD_LIST
 {
-	CMDDEF(ping, 0),
-	CMDDEF(whoami, 0),
-	CMDDEF(raw, 2),
-	CMDDEF(sh, 2),
-	CMDDEF(say, 2),
-	CMDDEF(mylvl, 0)
+	CMDDEF(ping),
+	CMDDEF(whoami),
+	CMDDEF(mylvl),
+	CMDDEF_(raw, PERMS_OWNER),
+	CMDDEF_(sh, PERMS_OWNER),
+	CMDDEF_(say, PERMS_OWNER)
 };
 
 
