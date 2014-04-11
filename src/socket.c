@@ -54,8 +54,8 @@ THREAD_CALLBACK IRC_ProcessDataThread(void* lpParam)
     char szBuffer[512], szLines[1024] = {0}, *lastLine, *pLine, *pNextLine;
 	struct instance_data* pID = (struct instance_data*)lpParam;
 
-    IRC_SendRaw(pID, "NICK %s", pID->cfg(CONFIG_SERVER_NICK)); // send the NICK command
-    IRC_SendRaw(pID, "USER %s * * :%s", pID->cfg(CONFIG_SERVER_USER), pID->cfg(CONFIG_SERVER_REAL)); // register with daemon
+    IRC_SendRawEx(pID, "NICK %s", pID->cfg(CONFIG_SERVER_NICK)); // send the NICK command
+    IRC_SendRawEx(pID, "USER %s * * :%s", pID->cfg(CONFIG_SERVER_USER), pID->cfg(CONFIG_SERVER_REAL)); // register with daemon
 
     while ((iRecvSize = recv(pID->iInstance, szBuffer, sizeof (szBuffer), 0))) // receive stream response, 512 bytes at a time
     {

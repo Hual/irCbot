@@ -18,7 +18,7 @@ void IRC_ProcessEvents(struct instance_data* pID, char *pLine)
     {
         if (!strcmp(pParts[0], "PING"))
         {
-            IRC_SendRaw(pID, "PONG %s", pParts[1]);
+            IRC_SendRawEx(pID, "PONG %s", pParts[1]);
         }
         else if (!strcmp(pParts[1], "JOIN"))
         {
@@ -71,19 +71,19 @@ void IRC_ProcessEvents(struct instance_data* pID, char *pLine)
                     {
                         if (!strncmp(pParts[3] + 2, "VERSION", 7))
                         {
-                            IRC_SendRaw(pID, "PRIVMSG #no :version fr");
+                            IRC_SendRawEx(pID, "PRIVMSG #no :version fr");
                         }
                         else if (!strncmp(pParts[3] + 2, "TIME", 4))
                         {
-                            IRC_SendRaw(pID, "PRIVMSG #no :time fr");
+                            IRC_SendRawEx(pID, "PRIVMSG #no :time fr");
                         }
                         else if (!strncmp(pParts[3] + 2, "FINGER", 6))
                         {
-                            IRC_SendRaw(pID, "PRIVMSG #no :finger fr");
+                            IRC_SendRawEx(pID, "PRIVMSG #no :finger fr");
                         }
                         else if (!strncmp(pParts[3] + 2, "PING", 4))
                         {
-                            IRC_SendRaw(pID, "PRIVMSG #no :ping fr");
+                            IRC_SendRawEx(pID, "PRIVMSG #no :ping fr");
                         }
                     }
                 }
@@ -112,7 +112,7 @@ void IRC_ProcessEvents(struct instance_data* pID, char *pLine)
 
 void IRC_OnNicknameConflict(struct instance_data* pID)
 {
-    IRC_SendRaw(pID, "NICK %s`%d", pID->cfg(CONFIG_SERVER_NICK), rand() % 0xFFFF);
+    IRC_SendRawEx(pID, "NICK %s`%d", pID->cfg(CONFIG_SERVER_NICK), rand() % 0xFFFF);
 }
 
 void IRC_OnBotConnect(struct instance_data* pID)
@@ -120,11 +120,11 @@ void IRC_OnBotConnect(struct instance_data* pID)
     char **pPerform;
     int iSize, iIdx;
 
-    IRC_SendRaw(pID, "JOIN %s", pID->cfg(CONFIG_SERVER_CHANNELS));
+    IRC_SendRawEx(pID, "JOIN %s", pID->cfg(CONFIG_SERVER_CHANNELS));
 
     iSize = explode(&pPerform, pID->cfg(CONFIG_SERVER_PERFORM), '~');
     for (iIdx = 0; iIdx != iSize; ++ iIdx)
-        IRC_SendRaw(pID, pPerform[iIdx]);
+        IRC_SendRawEx(pID, pPerform[iIdx]);
 
 	free(pPerform);
 }

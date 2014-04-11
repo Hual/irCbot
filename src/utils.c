@@ -105,7 +105,7 @@ THREAD_CALLBACK system_print(void* lpParam)
 		pOutput = popen(params->pArgs, "r");
 
 		while(fgets(szLine, 1024, pOutput) != NULL)
-			IRC_SendRaw(params->pID, "PRIVMSG %s :%s", params->pChannel, szLine);
+			IRC_SendRawEx(params->pID, "PRIVMSG %s :%s", params->pChannel, szLine);
 
 		pclose(pOutput);
 		free(params->pArgs);

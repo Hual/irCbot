@@ -12,26 +12,34 @@
 
 CMD(ping)
 {
-	IRC_SendRaw(pID, "PRIVMSG %s :Pong!", szChannel);
+	IRC_SendRawEx(pID, "PRIVMSG %s :Pong!", szChannel);
+}
+
+CMD(do)
+{
+	if(iArgc)
+		IRC_SendAction(pID, szChannel, szArgsRaw);
+	else
+		IRC_SendMessage(pID, szChannel, "Usage: .do [command]");
 }
 
 CMD(say)
 {
 	if(iArgc)
-		IRC_SendRaw(pID, "PRIVMSG %s :%s", szChannel, szArgsRaw);
+		IRC_SendRawEx(pID, "PRIVMSG %s :%s", szChannel, szArgsRaw);
 }
 
 CMD(whoami)
 {
-	IRC_SendRaw(pID, "PRIVMSG %s :You're %s", szChannel, szUser);
+	IRC_SendRawEx(pID, "PRIVMSG %s :You're %s", szChannel, szUser);
 }
 
 CMD(raw)
 {
 	if (iArgc)
-		IRC_SendRaw(pID, szArgsRaw);
+		IRC_SendRawEx(pID, szArgsRaw);
 	else
-		IRC_SendRaw(pID, "PRIVMSG %s :Usage: .raw [command]", szChannel);
+		IRC_SendRawEx(pID, "PRIVMSG %s :Usage: .raw [command]", szChannel);
 }
 
 CMD(sh)
@@ -53,13 +61,13 @@ CMD(sh)
 		StartThread(&handle, system_print, (void*)sspp);
 	}
 	else
-		IRC_SendRaw(pID, "PRIVMSG %s :Usage: .sh [command]", szChannel);
+		IRC_SendRawEx(pID, "PRIVMSG %s :Usage: .sh [command]", szChannel);
 }
 
 CMD(mylvl)
 {
 	unsigned int iLevel = GetPermissionsLevel(pID->sCSI, szUser);
-	IRC_SendRaw(pID, "PRIVMSG %s :Your permissions level: %i (%s)", szChannel, iLevel, g_szPermsName[iLevel]);
+	IRC_SendRawEx(pID, "PRIVMSG %s :Your permissions level: %i (%s)", szChannel, iLevel, g_szPermsName[iLevel]);
 }
 
 CMD_LIST
@@ -67,6 +75,7 @@ CMD_LIST
 	CMDDEF(ping),
 	CMDDEF(whoami),
 	CMDDEF(mylvl),
+	CMDDEF_(do, PERMS_OWNER),
 	CMDDEF_(raw, PERMS_OWNER),
 	CMDDEF_(sh, PERMS_OWNER),
 	CMDDEF_(say, PERMS_OWNER)

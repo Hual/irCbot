@@ -6,7 +6,17 @@
 
 #include "irc.h"
 
-int IRC_SendRaw(struct instance_data* pID, char *szRawCommand, ...) // send a raw formatted message
+int IRC_SendRaw(const struct instance_data* pID, const char *szRawCommand) // send a raw formatted message
+{
+    char szBuffer[512];
+
+	strcpy(szBuffer, szRawCommand);
+    strcat(szBuffer, "\r\n");
+
+    return send(pID->iInstance, szBuffer, strlen(szBuffer), 0) != SOCKET_ERROR;
+}
+
+int IRC_SendRawEx(const struct instance_data* pID, const char *szRawCommand, ...) // send a raw formatted message
 {
     char szBuffer[512];
 
@@ -17,6 +27,62 @@ int IRC_SendRaw(struct instance_data* pID, char *szRawCommand, ...) // send a ra
     strcat(szBuffer, "\r\n");
 
     return send(pID->iInstance, szBuffer, strlen(szBuffer), 0) != SOCKET_ERROR;
+}
+
+int IRC_SendMessage(const struct instance_data* pID, const char* szDestination, const char* szText)
+{
+    char szBuffer[512];
+	sprintf(szBuffer, "PRIVMSG %s :%s\r\n", szDestination, szText);
+    return send(pID->iInstance, szBuffer, strlen(szBuffer), 0) != SOCKET_ERROR;
+}
+
+int IRC_SendMessageEx(const struct instance_data* pID, const char* szDestination, const char* szText, ...)
+{
+    char szBuffer[512];
+
+    va_list pArgs;
+    va_start(pArgs, szText);
+    vsprintf(szBuffer, szText, pArgs);
+    va_end(pArgs);
+
+    return IRC_SendMessage(pID, szDestination, szBuffer);
+}
+
+int IRC_SendCTCPMessage(const struct instance_data* pID, const char* szDestination, const char* szText)
+{
+    char szBuffer[512];
+
+    sprintf(szBuffer, "\x01%s\x01", szText);
+
+    return IRC_SendMessage(pID, szDestination, szBuffer);
+}
+
+int IRC_SendAction(const struct instance_data* pID, const char* szDestination, const char* szText)
+{
+    char szBuffer[512];
+
+    sprintf(szBuffer, "ACTION %s", szText);
+
+    return IRC_SendCTCPMessage(pID, szDestination, szBuffer);
+}
+
+int IRC_SendNotice(const struct instance_data* pID, const char* szDestination, const char* szText)
+{
+    char szBuffer[512];
+	sprintf(szBuffer, "NOTICE %s :%s\r\n", szDestination, szText);
+    return send(pID->iInstance, szBuffer, strlen(szBuffer), 0) != SOCKET_ERROR;
+}
+
+int IRC_SendNoticeEx(const struct instance_data* pID, const char* szDestination, const char* szText, ...)
+{
+    char szBuffer[512];
+
+    va_list pArgs;
+    va_start(pArgs, szText);
+    vsprintf(szBuffer, szText, pArgs);
+    va_end(pArgs);
+
+    return IRC_SendNotice(pID, szDestination, szBuffer);
 }
 
 char* IRC_GetParameterAt(const char* szLine, unsigned int iNum)
