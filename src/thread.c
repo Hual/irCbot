@@ -8,15 +8,24 @@
 
 bool StartThread(THANDLE* handle, LPTHREAD_START_ROUTINE start_routine, void* arg)
 {
-	#if (defined(WIN32) || defined(_WIN32) || defined(_WIN64)) // is it a windows build?
+	#if (defined(WIN32) || defined(_WIN32) || defined(_WIN64))
 
-	THANDLE thHandle = CreateThread(NULL, 0, start_routine, arg, 0, NULL); // call windows' CreateThread
-	*handle = thHandle; // set 'handle' to point to thHandle
+	THANDLE thHandle = CreateThread(NULL, 0, start_routine, arg, 0, NULL);
+	*handle = thHandle;
 
-	return thHandle != 0; // return 1 on success, 0 on error
+	return thHandle != 0;
 	#else
 
-	return !pthread_create(handle, NULL, start_routine, arg); // call posix' pthread_create, return its return value
+	return !pthread_create(handle, NULL, start_routine, arg);
 
+	#endif
+}
+
+void ThreadSleep(unsigned int iTime)
+{
+	#if (defined(WIN32) || defined(_WIN32) || defined(_WIN64))
+		Sleep(iTime);
+	#else
+		usleep(iTime*1000);
 	#endif
 }

@@ -12,17 +12,17 @@
 #define CMDDEF_(cmd, level) { (#cmd), (CMD_##cmd), level }
 #define CMDDEF(cmd) { (#cmd), (CMD_##cmd), PERMS_USER }
 #define CMD_LIST static struct CMDstruct CMDlist[] =
-#define CMDPARAMS (struct instance_data* pID, char* szUser, char* szChannel, unsigned int iArgc, char** ppArgs, char* szArgsRaw)
+#define CMDPARAMS (struct instance_data* pID, struct userinfo* pUI, char* szChannel, unsigned int iArgc, char** ppArgs, char* szArgsRaw)
 #define CMD(cmd) static void CMD_##cmd CMDPARAMS
 
 struct CMDstruct
 {
+#pragma pack (1)
 	char* szName;
-	void (*fFunc) CMDPARAMS;
+	void (*pFunc) CMDPARAMS;
 	unsigned int iLevel;
 };
 
-char *g_pAppPath;
 bool IRC_ProcessCommand CMDPARAMS;
 bool IRC_IsAuthorized(const char *pAddress);
-#endif // COMMANDS_H_INCLUDED
+#endif

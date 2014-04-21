@@ -8,30 +8,30 @@
 
 char *g_pAppPath;
 
-int main(int argc, char **argv) // entry point
+int main(int argc, char **argv)
 {
-    char szConfigPath[PATH_MAX]; // initialize a char array
+    g_pAppPath = GetApplicationPath(argv[0]);
 
-    g_pAppPath = GetApplicationPath(argv[0]); // get the application path, argv[0] always stores application path
-    printf("-- irCbot v%i.%i.%i started (%s) --\n", (VERSION >> 16) & 0xFF, (VERSION >> 8) & 0xFF, VERSION & 0xFF, g_pAppPath);
-    GetNameFromPath(szConfigPath, g_pAppPath, "config.ini"); // append "config.ini" to the application path
+	printf("-- irCbot v%i.%i.%i started (%s)\n", (VERSION >> 16) & 0xFF, (VERSION >> 8) & 0xFF, VERSION & 0xFF, g_pAppPath);
 
-    if (!InitConfig(szConfigPath)) // load configuration from file
+    if (!InitConfig(g_pAppPath))
     {
-		error("Failed to load config!\n");
+		error("-- Failed to parse configuration file\n");
 		return EXIT_FAILURE;
     }
 
-	unsigned int i;
-	for(i = 0;i < g_sCI.iServers;++i)
+    printf("-- Successfully parsed configuration file\n");
+
+	if(!IRC_ConnectToConfigurationNetworks())
 	{
-		if(!IRC_AttemptConnection(&g_sCI.pServerInfo[i], NULL)) // connect to IP/hostname
-		{
-			error("Failed to connect to IRC network!\n");
-			return EXIT_FAILURE;
-		}
+		error("-- Failed to connect to one or more networks because of threading issues\n");
+		return EXIT_FAILURE;
 	}
 
+	printf("-- Successfully connected to networks specified in the configuration file\n");
+
     getchar();
+
+    free(g_pAppPath);
     return EXIT_SUCCESS;
 }

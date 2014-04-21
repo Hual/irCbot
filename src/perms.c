@@ -19,7 +19,7 @@ unsigned int GetPermissionsLevel(const struct server_info* pSI, const char *pUse
 	char pLine[512], szPath[PATH_MAX];
 	GetNameFromPath(szPath, g_pAppPath, g_sCI.pData[CONFIG_BOT_PERMISSIONS]);
 
-	if((pFile = fopen(szPath, "r")) != NULL) // file was read successfully
+	if((pFile = fopen(szPath, "r")) != NULL)
 	{
 		char szName[512] = {0};
 
@@ -38,14 +38,15 @@ unsigned int GetPermissionsLevel(const struct server_info* pSI, const char *pUse
 			}
 			else
 			{
-				pValue = memchr(pLine, '=', strlen(pLine)); // get '=' position
+				pValue = memchr(pLine, '=', strlen(pLine));
 
-				if(pValue != NULL) // '=' is found
+				if(pValue != NULL)
 				{
-					*pValue++ = 0; // set '=' to '\0', this splits the line into 2, and pointer is set to the char after
+					char* pKey;
 
-					char* pKey = trim(pLine); // trim space from key
-					pValue = trim(pValue); // trim space from value
+					*pValue++ = 0;
+					pKey = trim(pLine);
+					pValue = trim(pValue);
 
                     if(!strcmp(pSI->szName, szName) && !strcmp(pUser, pKey))
 					{

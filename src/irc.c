@@ -6,7 +6,7 @@
 
 #include "irc.h"
 
-int IRC_SendRaw(const struct instance_data* pID, const char *szRawCommand) // send a raw formatted message
+int IRC_SendRaw(const struct instance_data* pID, const char *szRawCommand)
 {
     char szBuffer[512];
 
@@ -16,7 +16,7 @@ int IRC_SendRaw(const struct instance_data* pID, const char *szRawCommand) // se
     return send(pID->iInstance, szBuffer, strlen(szBuffer), 0) != SOCKET_ERROR;
 }
 
-int IRC_SendRawEx(const struct instance_data* pID, const char *szRawCommand, ...) // send a raw formatted message
+int IRC_SendRawEx(const struct instance_data* pID, const char *szRawCommand, ...)
 {
     char szBuffer[512];
 
@@ -85,6 +85,11 @@ int IRC_SendNoticeEx(const struct instance_data* pID, const char* szDestination,
     return IRC_SendNotice(pID, szDestination, szBuffer);
 }
 
+int IRC_SendQuitMessage(const struct instance_data* pID, const char* szMessage)
+{
+    return IRC_SendRawEx(pID, "QUIT :%s", szMessage);
+}
+
 char* IRC_GetParameterAt(const char* szLine, unsigned int iNum)
 {
 	int i = 0;
@@ -97,8 +102,48 @@ char* IRC_GetParameterAt(const char* szLine, unsigned int iNum)
 	return pParam+1;
 }
 
-void IRC_echo(struct instance_data* pID, char *pLine)
+void IRC_EchoEx(const struct instance_data* pID, unsigned int iLevel, char* szMessage, ...)
 {
-	if(g_sCI.pData[CONFIG_BOT_ECHO][0] == '1')
-		printf("%s:%i > %s\r\n", pID->cfg(CONFIG_SERVER_ADDRESS), atoi(pID->cfg(CONFIG_SERVER_PORT)), pLine);
+    if(g_sCI.pData[CONFIG_BOT_ECHO][0] == iLevel)
+	{
+		char szBuffer[512];
+
+		va_list pArgs;
+		va_start(pArgs, szMessage);
+		vsprintf(szBuffer, szMessage, pArgs);
+		va_end(pArgs);
+
+		printf("%s > %s\n", pID->sSI->szName, szBuffer);
+	}
+}
+
+char* IRC_UserStringToStruct(struct userinfo* pUI, char* szUser)
+{
+	char* pUser;
+
+	pUI->raw = szUser;
+	pUser = (char*)malloc(strlen(szUser)+1);
+	strcpy(pUser, szUser);
+	pUI->nick = pUser;
+	pUI->user = strchr(pUI->nick, '!')+1;
+	if(pUI->user-1)
+	{
+		pUI->host = strchr(pUI->user, '@')+1;
+		*(pUI->user-1) = *(pUI->host-1) = 0;
+	}
+
+	return pUser;
+}
+
+bool IRC_ConnectToConfigurationNetworks()
+{
+	unsigned int i;
+
+    printf("-- Connecting to networks...\n");
+
+	for(i = 0;i < g_sCI.iServers;++i)
+		if(!IRC_AttemptConnection(&g_sCI.pServerInfo[i], NULL))
+			return false;
+
+	return true;
 }

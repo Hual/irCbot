@@ -40,17 +40,17 @@ unsigned int explode(char ***arr_ptr, char *str, const char delimiter)
 char* GetApplicationPath(char *szMargv0)
 {
 	char *pAddr;
-	if((pAddr = strrchr(szMargv0, '/')) == NULL) // get a pointer to the last instance of a character which is not a windows system directory delimiter
-		pAddr = strrchr(szMargv0, '\\'); // get a pointer to the last instance of a character which is a windows system directory delimiter
+	if((pAddr = strrchr(szMargv0, '/')) == NULL)
+		pAddr = strrchr(szMargv0, '\\');
 
-	szMargv0[((unsigned int)pAddr - (unsigned int)szMargv0) + 1] = 0; // calculate offsets, set the appropriate char to 0 to remove filename
-	return szMargv0; // return a pointer to the filename
+	szMargv0[((unsigned int)pAddr-(unsigned int)szMargv0)+1] = 0;
+	return szMargv0;
 }
 
 void GetNameFromPath(char *lpOut, const char *szPath, const char *szName)
 {
-	strcpy(lpOut, szPath); // append path to empty string
-	strcat(lpOut, szName); // append file name to path
+	strcpy(lpOut, szPath);
+	strcat(lpOut, szName);
 }
 
 signed int GetKeyIndex(const char** ppKeys, const char* szKey, const unsigned int len)
@@ -58,11 +58,11 @@ signed int GetKeyIndex(const char** ppKeys, const char* szKey, const unsigned in
 	signed int i = 0;
 	do
 	{
-		if(!strcmp(ppKeys[i], szKey)) // if the keys match, return the index
+		if(!strcmp(ppKeys[i], szKey))
 			return i;
 	}
-	while(++i < len); // while pointer is valid
-	return -1; // no matching keys found
+	while(++i < len);
+	return -1;
 }
 
 char* trim_left(char *szString)

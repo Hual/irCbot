@@ -6,34 +6,35 @@
 
 #include "config.h"
 
-const static char *ppServerConfigKeys[INI_SERVER_KEYS] = // a private constant array that stores keys
+const static char *ppServerConfigKeys[INI_SERVER_KEYS] =
 {
-	"address",      // CONFIG_SERVER_ADDRESS
-	"port",         // CONFIG_SERVER_PORT
-	"ssl",          // CONFIG_SERVER_SSL
-	"nickname",     // CONFIG_SERVER_NICK
-	"username",     // CONFIG_SERVER_USER
-	"realname",     // CONFIG_SERVER_REAL
-	"channels",     // CONFIG_SERVER_CHANNELS
-	"perform"       // CONFIG_SERVER_PERFORM
+	"address",      /* CONFIG_SERVER_ADDRESS */
+	"port",         /* CONFIG_SERVER_PORT */
+	"ssl",          /* CONFIG_SERVER_SSL */
+	"nickname",     /* CONFIG_SERVER_NICK */
+	"username",     /* CONFIG_SERVER_USER */
+	"realname",     /* CONFIG_SERVER_REAL */
+	"channels",     /* CONFIG_SERVER_CHANNELS */
+	"perform"       /* CONFIG_SERVER_PERFORM */
 };
 
 const static char *ppBotConfigKeys[INI_BOT_KEYS] =
 {
-	"cmdprefix",    // CONFIG_BOT_PREFIX
-	"echo",         // CONFIG_BOT_ECHO
-	"permissions"
+	"cmdprefix",           /* CONFIG_BOT_PREFIX */
+	"echo",                /* CONFIG_BOT_ECHO */
+	"permissions",         /* CONFIG_BOT_PERMISSIONS */
+	"reconnect-interval",  /* CONFIG_BOT_RECONINTERVAL */
 };
 
 struct config_info g_sCI;
 
 static void ProcessConfigElement(char** out, const char* szKey, const char* szValue, const char** pKeyPool, const unsigned int iKeyPoolLength)
 {
-	signed int iIdx = GetKeyIndex(pKeyPool, szKey, iKeyPoolLength); // get the index of the key (to be stored in the appropriate index in ppConfig)
+	signed int iIdx = GetKeyIndex(pKeyPool, szKey, iKeyPoolLength);
 
-	if(iIdx != -1) // if key is valid
+	if(iIdx != -1)
 	{
-		out[iIdx] = malloc(strlen(szValue)+1); // store value in global configuration values array
+		out[iIdx] = malloc(strlen(szValue)+1);
 		strcpy(out[iIdx], szValue);
 	}
 }
@@ -41,12 +42,16 @@ static void ProcessConfigElement(char** out, const char* szKey, const char* szVa
 bool InitConfig(const char *pLocation)
 {
 	FILE *pFile;
-	char pLine[512];
+	char pLine[512], szFullPath[PATH_MAX];
+
+	printf("-- Parsing configuration file...\n");
+
+    GetNameFromPath(szFullPath, pLocation, "config.ini");
 
 	g_sCI.iServers = 0;
 	g_sCI.pServerInfo = NULL;
 
-	if((pFile = fopen(pLocation, "r")) != NULL) // file was read successfully
+	if((pFile = fopen(szFullPath, "r")) != NULL)
 	{
 		struct server_info* csi = NULL;
 
@@ -78,14 +83,15 @@ bool InitConfig(const char *pLocation)
 			}
 			else
 			{
-				pValue = memchr(pLine, '=', strlen(pLine)); // get '=' position
+				pValue = memchr(pLine, '=', strlen(pLine));
 
-				if(pValue != NULL) // '=' is found
+				if(pValue != NULL)
 				{
-					*pValue++ = 0; // set '=' to '\0', this splits the line into 2, and pointer is set to the char after
+					char* pKey;
 
-					char* pKey = trim(pLine); // trim space from key
-					pValue = trim(pValue); // trim space from value
+					*pValue++ = 0;
+					pKey = trim(pLine);
+					pValue = trim(pValue);
 
 					if(!g_sCI.iServers)
 						ProcessConfigElement(g_sCI.pData, pKey, pValue, ppBotConfigKeys, INI_BOT_KEYS);
@@ -96,7 +102,7 @@ bool InitConfig(const char *pLocation)
 		}
 
 		fclose(pFile);
-		return true; // success
+		return true;
 	}
-    return false; // error
+    return false;
 }

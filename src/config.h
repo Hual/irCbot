@@ -23,20 +23,24 @@
 #define CONFIG_BOT_PREFIX 0
 #define CONFIG_BOT_ECHO 1
 #define CONFIG_BOT_PERMISSIONS 2
+#define CONFIG_BOT_RECONINTERVAL 3
 
 #define INI_SERVER_KEYS 8
-#define INI_BOT_KEYS 3
+#define INI_BOT_KEYS 4
 
-#define cfg(a) sCSI->pData[a]
+#define cfg(a) sSI->pData[a]
 
 struct server_info
 {
+#pragma pack (1)
 	char* szName;
 	char* pData[INI_SERVER_KEYS];
+	FILE* pLogFile;
 };
 
 struct config_info
 {
+#pragma pack (1)
 	char* pData[INI_BOT_KEYS];
 	unsigned int iServers;
 	struct server_info* pServerInfo;
@@ -44,6 +48,6 @@ struct config_info
 
 extern struct config_info g_sCI;
 
-bool InitConfig(const char *szLocation); // IRC_SetupConfig method, used to load the configuration from the file
+bool InitConfig(const char *szLocation);
 
-#endif // CONFIG_H_INCLUDED
+#endif

@@ -9,7 +9,7 @@
 
 #include "stdafx.h"
 
-#if (defined(WIN32) || defined(_WIN32) || defined(_WIN64)) // is it a windows build?
+#if (defined(WIN32) || defined(_WIN32) || defined(_WIN64))
 
 	#define WIN32_LEAN_AND_MEAN
 	#include <winsock2.h>
@@ -34,6 +34,7 @@
 #endif
 
 int IRC_AttemptConnection(struct server_info* pSI, struct instance_data* pOut);
-THREAD_CALLBACK IRC_ProcessDataThread(void* lpParam); // pointer to a threaded function
+void CloseConnection(struct instance_data* pID);
+THREAD_CALLBACK IRC_ProcessDataThread(void* lpParam);
 
-#endif // SOCKET_H_INCLUDED
+#endif

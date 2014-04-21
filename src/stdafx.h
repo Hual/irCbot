@@ -13,7 +13,7 @@
 #include <limits.h>
 #include <ctype.h>
 
-#if (defined(WIN32) || defined(_WIN32) || defined(_WIN64)) // is it a windows build?
+#if (defined(WIN32) || defined(_WIN32) || defined(_WIN64))
 	#define _WIN32_WINNT 0x0501
 	#include <windows.h>
 #else
@@ -27,11 +27,12 @@ typedef unsigned int INSTANCE;
 
 struct instance_data
 {
+#pragma pack (1)
 	INSTANCE iInstance;
-	struct server_info* sCSI;
+	struct server_info* sSI;
 };
 
-extern char *g_pAppPath; // char pointer, stores application path
+extern char *g_pAppPath;
 
 #include "constants.h"
 #include "thread.h"

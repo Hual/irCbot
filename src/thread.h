@@ -9,7 +9,7 @@
 #ifndef THREAD_H_INCLUDED
 	#define THREAD_H_INCLUDED
 
-#if (defined(WIN32) || defined(_WIN32) || defined(_WIN64)) // is it a windows build?
+#if (defined(WIN32) || defined(_WIN32) || defined(_WIN64))
 
 	#define THREAD_CALLBACK DWORD WINAPI
 	#define WaitForThread(thread) WaitForSingleObject(thread, INFINITE)
@@ -27,5 +27,6 @@
 #endif
 
 bool StartThread(THANDLE* handle, LPTHREAD_START_ROUTINE start_routine, void* arg);
+void ThreadSleep(unsigned int iTime);
 
-#endif // THREAD_H_INCLUDED
+#endif

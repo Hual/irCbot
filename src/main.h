@@ -9,4 +9,4 @@
 
 #include "stdafx.h"
 
-#endif // MAIN_H_INCLUDED
+#endif

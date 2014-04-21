@@ -8,11 +8,12 @@
 
 /********************** start editing here **********************/
 
-// (struct instance_data* pID, char* szUser, char* szChannel, unsigned int iArgc, char** ppArgs, char* szArgsRaw)
+
+/* (struct instance_data* pID, struct userinfo* pUI, char* szChannel, unsigned int iArgc, char** ppArgs, char* szArgsRaw) */
 
 CMD(ping)
 {
-	IRC_SendRawEx(pID, "PRIVMSG %s :Pong!", szChannel);
+	IRC_SendMessage(pID, szChannel, "Pong!");
 }
 
 CMD(do)
@@ -26,12 +27,12 @@ CMD(do)
 CMD(say)
 {
 	if(iArgc)
-		IRC_SendRawEx(pID, "PRIVMSG %s :%s", szChannel, szArgsRaw);
+		IRC_SendMessage(pID, szChannel, szArgsRaw);
 }
 
 CMD(whoami)
 {
-	IRC_SendRawEx(pID, "PRIVMSG %s :You're %s", szChannel, szUser);
+	IRC_SendMessageEx(pID, szChannel, "You're %s", pUI->raw);
 }
 
 CMD(raw)
@@ -39,7 +40,7 @@ CMD(raw)
 	if (iArgc)
 		IRC_SendRawEx(pID, szArgsRaw);
 	else
-		IRC_SendRawEx(pID, "PRIVMSG %s :Usage: .raw [command]", szChannel);
+		IRC_SendMessage(pID, szChannel, "Usage: .raw [command]");
 }
 
 CMD(sh)
@@ -47,27 +48,28 @@ CMD(sh)
 	if (iArgc)
 	{
 		char* _szChannel, * szArgs;
+		struct system_print_params* sspp;
+		THANDLE handle;
 		_szChannel = malloc(64);
 		szArgs = malloc(512);
 		strcpy(_szChannel, szChannel);
 		strcpy(szArgs, szArgsRaw);
 
-		struct system_print_params* sspp = (struct system_print_params*)malloc(sizeof(struct system_print_params));
+		sspp = (struct system_print_params*)malloc(sizeof(struct system_print_params));
 		sspp->pID = pID;
 		sspp->pChannel = _szChannel;
 		sspp->pArgs = szArgs;
 
-		THANDLE handle;
 		StartThread(&handle, system_print, (void*)sspp);
 	}
 	else
-		IRC_SendRawEx(pID, "PRIVMSG %s :Usage: .sh [command]", szChannel);
+		IRC_SendMessage(pID, szChannel, "Usage: .sh [command]");
 }
 
 CMD(mylvl)
 {
-	unsigned int iLevel = GetPermissionsLevel(pID->sCSI, szUser);
-	IRC_SendRawEx(pID, "PRIVMSG %s :Your permissions level: %i (%s)", szChannel, iLevel, g_szPermsName[iLevel]);
+	unsigned int iLevel = GetPermissionsLevel(pID->sSI, pUI->raw);
+	IRC_SendMessageEx(pID, szChannel, "Your permissions level: %i (%s)", iLevel, g_szPermsName[iLevel]);
 }
 
 CMD_LIST
@@ -89,9 +91,9 @@ bool IRC_ProcessCommand CMDPARAMS
 	unsigned int i;
 	for(i = 0; i < sizeof(CMDlist)/sizeof(struct CMDstruct);++i)
 	{
-		if(!strcmp(CMDlist[i].szName, &ppArgs[0][2]) && GetPermissionsLevel(pID->sCSI, szUser) >= CMDlist[i].iLevel)
+		if(!strcmp(CMDlist[i].szName, ppArgs[0]+strlen(g_sCI.pData[CONFIG_BOT_PREFIX])+1) && GetPermissionsLevel(pID->sSI, pUI->raw) >= CMDlist[i].iLevel)
 		{
-			CMDlist[i].fFunc(pID, szUser, szChannel, iArgc-4, &ppArgs[1], szArgsRaw);
+			CMDlist[i].pFunc(pID, pUI, szChannel, iArgc-4, &ppArgs[1], szArgsRaw);
 			return true;
 		}
 	}
